@@ -1,6 +1,6 @@
 const api_url = 'https://pokeapi.co/api/v2/';		
-				var request_details = new XMLHttpRequest();
-				var pokedata;
+var request_details = new XMLHttpRequest();
+var pokedata;
 			
 String.prototype.fcaps = function() {
 	  return this.charAt(0).toUpperCase() + this.slice(1);
@@ -31,8 +31,6 @@ function search_pokemon()
                   request_type.onload = function () {
                     if (request_type.status >= 200 && request_type.status < 400) {
                       var type_details = JSON.parse(this.response);
-                      console.log(type_details);
-
                       document.getElementById("pokemon-half-damage-from").innerHTML = '<div class="font-weight-bold">Half-Damage</div>';
                       type_details.damage_relations.half_damage_from.forEach(type => {
                         document.getElementById("pokemon-half-damage-from").innerHTML += '<li>' + type.name.fcaps() + '</li>';
