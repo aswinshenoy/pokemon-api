@@ -1,0 +1,117 @@
+<html>
+	<head>
+		<title>Pokemon API Search</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+		<script>
+				const api_url = 'https://pokeapi.co/api/v2/';		
+				var rnames = new XMLHttpRequest();
+				var request_details = new XMLHttpRequest();
+				var pokedata;
+				
+				rnames.open('GET', api_url+'pokemon/', true);
+				rnames.onload = function () {
+				  
+				  if (rnames.status >= 200 && rnames.status < 400) 
+				  {
+						
+						pokedata = JSON.parse(this.response);
+				  } else {
+						console.log('error');
+				  }
+				 
+				}
+				rnames.send();
+				
+				function search_pokemon()
+				{
+					var pokemon_searched = document.getElementById("search_name").value;
+
+					pokedata.results.forEach(pokemon => {
+					   if(!pokemon.name.localeCompare(pokemon_searched.toLowerCase()))
+					   {					
+							request_details.open('GET', api_url+'pokemon/'+pokemon.name , true);
+							request_details.onload = function () {
+							 if (request_details.status >= 200 && request_details.status < 400) {
+									var pokemon_details = JSON.parse(this.response);
+									
+									document.getElementById("pokemon-abilities").innerHTML = '<h3>Abilities</h3><ul>';
+									pokemon_details.abilities.forEach(ability => {
+										document.getElementById("pokemon-abilities").innerHTML += '<li>' + ability.ability.name + '</li>';
+									});
+									
+									
+									document.getElementById("pokemon-types").innerHTML = '<h3>Types</h3><ul>';
+									pokemon_details.types.forEach(type => {
+										document.getElementById("pokemon-types").innerHTML += '<li>' + type.type.name + '</li>';
+										
+										var request_type = new XMLHttpRequest();
+										request_type.open('GET', api_url+'type/'+type.type.name , true);
+										request_type.onload = function () {
+											if (request_type.status >= 200 && request_type.status < 400) {
+												var type_details = JSON.parse(this.response);
+												console.log(type_details);
+												
+												document.getElementById("pokemon-half-damage-from").innerHTML = '<h4>Half-Damage From</h4>';
+												type_details.damage_relations.half_damage_from.forEach(type => {
+													document.getElementById("pokemon-half-damage-from").innerHTML += '<li>' + type.name + '</li>';
+												});
+												
+												document.getElementById("pokemon-double-damage-from").innerHTML = '<h4>Double-Damage From</h4>';
+												type_details.damage_relations.double_damage_from.forEach(type => {
+													document.getElementById("pokemon-double-damage-from").innerHTML += '<li>' + type.name + '</li>';
+												});
+												
+												type_details.damage_relations.half_damage_to.forEach(type => {
+													document.getElementById("pokemon-half-damage-to").innerHTML += '<li>' + type.name + '</li>';
+												});
+												
+												document.getElementById("pokemon-double-damage-to").innerHTML = '<h4>Double-Damage To</h4>';
+												type_details.damage_relations.double_damage_to.forEach(type => {
+													document.getElementById("pokemon-double-damage-to").innerHTML += '<li>' + type.name + '</li>';
+												});
+												
+											}
+										}
+										request_type.send();
+							 
+									});
+									
+									document.getElementById("pokemon-name").innerHTML = '<h1 class="m-0 d-inline">' + pokemon.name.toUpperCase() + '</h1>';
+									document.getElementById("pokemon-abilities").innerHTML += '</ul>';
+									document.getElementById("pokemon-image").innerHTML = '<img style="width: 96px;" src="' + pokemon_details.sprites.front_default + '">';
+									document.getElementById("pokemon-weight").innerHTML = '<span classs="font-weight-bold">Weight:</span> ' + pokemon_details.weight + 'kg';
+							  } else {	console.log('error'); }
+							}
+							request_details.send();
+							
+					   }
+					});
+				}
+		</script>
+	</head>
+	<body>
+		<div id="search-box" class="bg-primary p-3 text-center">
+			<form class="mb-0" onsubmit="search_pokemon(); return false">
+				<div class="d-flex justify-content-center">
+					<input id="search_name" type="text" value="" placeholder="Enter Pokemon Name" class="p-1 mr-1">
+					<input type="submit" value="Search" class="btn btn-light p-2">
+				</div>
+			</form>
+		</div>
+		<div class="container p-2">
+			<div id="pokemon-image" class="d-inline"></div> <div id="pokemon-name" class="d-inline"></div>
+			<div id="pokemon-weight"></div>
+			<div class="row m-0">
+				<div id="pokemon-abilities" class="col-lg-2 col-md-4 col-6"></div>
+				<div id="pokemon-types" class="col-lg-2 col-md-4 col-6"></div>
+				<div id="pokemon-damage-from" class="col-lg-2 col-md-4 col-6">
+					<div id="pokemon-double-damage-from"></div>
+					<div id="pokemon-half-damage-from"></div>
+				</div>
+				<div id="pokemon-damage-to" class="col-lg-2 col-md-4 col-6">
+					<div id="pokemon-double-damage-to"></div>
+					<div id="pokemon-half-damage-to"></div>
+				</div>
+		</div>
+	</body>
+</html>
