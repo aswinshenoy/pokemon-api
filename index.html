@@ -7,9 +7,9 @@
 				var request_details = new XMLHttpRequest();
 				var pokedata;
 			
-       String.prototype.fcaps = function() {
-          return this.charAt(0).toUpperCase() + this.slice(1);
-      }
+			       String.prototype.fcaps = function() {
+				  return this.charAt(0).toUpperCase() + this.slice(1);
+			      }
       
 				function search_pokemon()
 				{
@@ -21,13 +21,13 @@
 									
 									document.getElementById("pokemon-abilities").innerHTML = '<h3>Abilities</h3><ul>';
 									pokemon_details.abilities.forEach(ability => {
-										document.getElementById("pokemon-abilities").innerHTML += '<li>' + ability.ability.name + '</li>';
+										document.getElementById("pokemon-abilities").innerHTML += '<li>' + ability.ability.name.fcaps() + '</li>';
 									});
 									
 									
 									document.getElementById("pokemon-types").innerHTML = '<h3>Type</h3><ul>';
 									pokemon_details.types.forEach(type => {
-										document.getElementById("pokemon-types").innerHTML += '<li>' + type.type.name + '</li>';
+										document.getElementById("pokemon-types").innerHTML += '<li>' + type.type.name.fcaps() + '</li>';
 										
 										var request_type = new XMLHttpRequest();
 										request_type.open('GET', api_url+'type/'+type.type.name , true);
@@ -38,12 +38,12 @@
 												
 												document.getElementById("pokemon-half-damage-from").innerHTML = '<div class="font-weight-bold">Half-Damage</div>';
 												type_details.damage_relations.half_damage_from.forEach(type => {
-													document.getElementById("pokemon-half-damage-from").innerHTML += '<li>' + type.name + '</li>';
+													document.getElementById("pokemon-half-damage-from").innerHTML += '<li>' + type.name.fcaps() + '</li>';
 												});
 												
 												document.getElementById("pokemon-double-damage-from").innerHTML = '<div class="font-weight-bold">Double-Damage</div>';
 												type_details.damage_relations.double_damage_from.forEach(type => {
-													document.getElementById("pokemon-double-damage-from").innerHTML += '<li>' + type.name + '</li>';
+													document.getElementById("pokemon-double-damage-from").innerHTML += '<li>' + type.name.fcaps() + '</li>';
 												});
 												
 												document.getElementById("pokemon-half-damage-to").innerHTML = '<div class="font-weight-bold">Half-Damage To</div>';
