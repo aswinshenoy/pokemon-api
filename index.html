@@ -4,32 +4,17 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 		<script>
 				const api_url = 'https://pokeapi.co/api/v2/';		
-				var rnames = new XMLHttpRequest();
 				var request_details = new XMLHttpRequest();
 				var pokedata;
-				
-				rnames.open('GET', api_url+'pokemon/', true);
-				rnames.onload = function () {
-				  
-				  if (rnames.status >= 200 && rnames.status < 400) 
-				  {
-						
-						pokedata = JSON.parse(this.response);
-				  } else {
-						console.log('error');
-				  }
-				 
-				}
-				rnames.send();
-				
+			
+       String.prototype.fcaps = function() {
+          return this.charAt(0).toUpperCase() + this.slice(1);
+      }
+      
 				function search_pokemon()
 				{
-					var pokemon_searched = document.getElementById("search_name").value;
-
-					pokedata.results.forEach(pokemon => {
-					   if(!pokemon.name.localeCompare(pokemon_searched.toLowerCase()))
-					   {					
-							request_details.open('GET', api_url+'pokemon/'+pokemon.name , true);
+					var pokemon_searched = document.getElementById("search_name").value;				
+							request_details.open('GET', api_url+'pokemon/'+pokemon_searched.toLowerCase(), true);
 							request_details.onload = function () {
 							 if (request_details.status >= 200 && request_details.status < 400) {
 									var pokemon_details = JSON.parse(this.response);
@@ -40,7 +25,7 @@
 									});
 									
 									
-									document.getElementById("pokemon-types").innerHTML = '<h3>Types</h3><ul>';
+									document.getElementById("pokemon-types").innerHTML = '<h3>Type</h3><ul>';
 									pokemon_details.types.forEach(type => {
 										document.getElementById("pokemon-types").innerHTML += '<li>' + type.type.name + '</li>';
 										
@@ -51,23 +36,24 @@
 												var type_details = JSON.parse(this.response);
 												console.log(type_details);
 												
-												document.getElementById("pokemon-half-damage-from").innerHTML = '<h4>Half-Damage From</h4>';
+												document.getElementById("pokemon-half-damage-from").innerHTML = '<div class="font-weight-bold">Half-Damage</div>';
 												type_details.damage_relations.half_damage_from.forEach(type => {
 													document.getElementById("pokemon-half-damage-from").innerHTML += '<li>' + type.name + '</li>';
 												});
 												
-												document.getElementById("pokemon-double-damage-from").innerHTML = '<h4>Double-Damage From</h4>';
+												document.getElementById("pokemon-double-damage-from").innerHTML = '<div class="font-weight-bold">Double-Damage</div>';
 												type_details.damage_relations.double_damage_from.forEach(type => {
 													document.getElementById("pokemon-double-damage-from").innerHTML += '<li>' + type.name + '</li>';
 												});
 												
-												type_details.damage_relations.half_damage_to.forEach(type => {
-													document.getElementById("pokemon-half-damage-to").innerHTML += '<li>' + type.name + '</li>';
+												document.getElementById("pokemon-half-damage-to").innerHTML = '<div class="font-weight-bold">Half-Damage To</div>';
+                        type_details.damage_relations.half_damage_to.forEach(type => {
+													document.getElementById("pokemon-half-damage-to").innerHTML += '<li>' + type.name.fcaps() + '</li>';
 												});
 												
-												document.getElementById("pokemon-double-damage-to").innerHTML = '<h4>Double-Damage To</h4>';
+												document.getElementById("pokemon-double-damage-to").innerHTML = '<div class="font-weight-bold">Double-Damage To</div>';
 												type_details.damage_relations.double_damage_to.forEach(type => {
-													document.getElementById("pokemon-double-damage-to").innerHTML += '<li>' + type.name + '</li>';
+													document.getElementById("pokemon-double-damage-to").innerHTML += '<li>' + type.name.fcaps() + '</li>';
 												});
 												
 											}
@@ -76,16 +62,18 @@
 							 
 									});
 									
-									document.getElementById("pokemon-name").innerHTML = '<h1 class="m-0 d-inline">' + pokemon.name.toUpperCase() + '</h1>';
+									document.getElementById("pokemon-name").innerHTML = '<h1 class="m-0 d-inline">' + pokemon_searched.toUpperCase() + '</h1>';
 									document.getElementById("pokemon-abilities").innerHTML += '</ul>';
 									document.getElementById("pokemon-image").innerHTML = '<img style="width: 96px;" src="' + pokemon_details.sprites.front_default + '">';
-									document.getElementById("pokemon-weight").innerHTML = '<span classs="font-weight-bold">Weight:</span> ' + pokemon_details.weight + 'kg';
-							  } else {	console.log('error'); }
+									document.getElementById("pokemon-weight").innerHTML = '<span class="font-weight-bold">Weight:</span> ' + pokemon_details.weight + 'kg';
+							  } 
+                else 
+                {	
+                		document.getElementById("pokemon-details").innerHTML = '<h3>Pokemon Not Found</h3>' 
+                }
 							}
 							request_details.send();
-							
-					   }
-					});
+              
 				}
 		</script>
 	</head>
@@ -98,20 +86,38 @@
 				</div>
 			</form>
 		</div>
-		<div class="container p-2">
-			<div id="pokemon-image" class="d-inline"></div> <div id="pokemon-name" class="d-inline"></div>
-			<div id="pokemon-weight"></div>
-			<div class="row m-0">
-				<div id="pokemon-abilities" class="col-lg-2 col-md-4 col-6"></div>
-				<div id="pokemon-types" class="col-lg-2 col-md-4 col-6"></div>
-				<div id="pokemon-damage-from" class="col-lg-2 col-md-4 col-6">
-					<div id="pokemon-double-damage-from"></div>
-					<div id="pokemon-half-damage-from"></div>
-				</div>
-				<div id="pokemon-damage-to" class="col-lg-2 col-md-4 col-6">
-					<div id="pokemon-double-damage-to"></div>
-					<div id="pokemon-half-damage-to"></div>
-				</div>
+		<div id="pokemon-details" class="container p-2">
+          <div class="row m-0">
+            <div class="col-sm-2 col-4">
+                <div id="pokemon-image"></div>
+            </div>
+            <div class="col">
+              <div id="pokemon-name"></div>
+              <div id="pokemon-weight"></div>
+            </div>
+          </div>
+          <div class="row m-0">
+            <div class="col-md-6 p-0">
+              <div id="pokemon-abilities" class="card  p-2 m-1"></div>
+            </div>
+            <div class="col-md-6 p-0">
+              <div id="pokemon-types" class="card p-2 m-1"></div>
+            </div> 
+          </div>
+          <div id="pokemon-damage-to" class="card p-2 m-1">
+            <h4>Strengths</h4>
+            <div class="row m-0">
+              <div id="pokemon-double-damage-to" class="col-md-6"></div>
+              <div id="pokemon-half-damage-to" class="col-md-6"></div>
+            </div> 
+          </div>
+          <div id="pokemon-damage-from" class="card p-2 m-1">
+            <h4>Weakness</h4>
+            <div class="row m-0">
+              <div id="pokemon-double-damage-from" class="col-md-6"></div>
+              <div id="pokemon-half-damage-from" class="col-md-6"></div>
+            </div>
+          </div>
 		</div>
 	</body>
 </html>
