@@ -8,6 +8,7 @@ String.prototype.fcaps = function() {
  
 function search_pokemon()
 {
+	document.getElementById("pokemon-details").style.display = "block"
         var pokemon_searched = document.getElementById("search_name").value;				
         request_details.open('GET', api_url+'pokemon/'+pokemon_searched.toLowerCase(), true);
         request_details.onload = function () {
@@ -66,6 +67,7 @@ function search_pokemon()
               {	
                   document.getElementById("pokemon-details").innerHTML = '<h3>Pokemon Not Found</h3>' 
               }
+		document.getElementById("pokemon-details").style.display = "block"
             }
             request_details.send();
 
