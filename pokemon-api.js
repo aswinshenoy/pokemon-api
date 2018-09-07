@@ -12,13 +12,15 @@ function search_pokemon()
         request_details.open('GET', api_url+'pokemon/'+pokemon_searched.toLowerCase(), true);
         request_details.onload = function () {
              if (request_details.status >= 200 && request_details.status < 400) {
+		    
                 var pokemon_details = JSON.parse(this.response);
-
-                document.getElementById("pokemon-abilities").innerHTML = '<h3>Abilities</h3><ul>';
+		
+		document.getElementById("pokemon-details").style.display = "block";
+                
+		document.getElementById("pokemon-abilities").innerHTML = '<h3>Abilities</h3><ul>';
                 pokemon_details.abilities.forEach(ability => {
                   document.getElementById("pokemon-abilities").innerHTML += '<li>' + ability.ability.name.fcaps() + '</li>';
                 });
-
 
                 document.getElementById("pokemon-types").innerHTML = '<h3>Type</h3><ul>';
                 pokemon_details.types.forEach(type => {
