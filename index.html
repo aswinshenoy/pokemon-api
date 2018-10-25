@@ -3,126 +3,87 @@
 	<head>
 		<title>Pokemon API Search</title>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-		<script>
-			const api_url = 'https://pokeapi.co/api/v2/';
-			var request_details = new XMLHttpRequest();
-			var pokedata;
-
-			String.prototype.fcaps = function() {
-				  return this.charAt(0).toUpperCase() + this.slice(1);
-			}
-
-			function search_pokemon()
-			{
-				document.getElementById("pokemon-details").style.display = "block"
-			        var pokemon_searched = document.getElementById("search_name").value;
-			        request_details.open('GET', api_url+'pokemon/'+pokemon_searched.toLowerCase()+ '/', true);
-			        request_details.onload = function () {
-			             if (request_details.status >= 200 && request_details.status < 400) {
-
-			                var pokemon_details = JSON.parse(this.response);
-
-											document.getElementById("pokemon-details").style.display = "block";
-
-											document.getElementById("pokemon-abilities").innerHTML = '<h3>Abilities</h3>';
-			                pokemon_details.abilities.forEach(ability => {
-			                  document.getElementById("pokemon-abilities").innerHTML += '<li>' + ability.ability.name.fcaps() + '</li>';
-			                });
-
-			                document.getElementById("pokemon-types").innerHTML = '<h3>Type</h3>';
-			                pokemon_details.types.forEach(type => {
-			                  document.getElementById("pokemon-types").innerHTML += '<li>' + type.type.name.fcaps() + '</li>';
-
-			                  var request_type = new XMLHttpRequest();
-			                  request_type.open('GET', api_url+'type/'+type.type.name + '/' , true);
-			                  request_type.onload = function () {
-			                    if (request_type.status >= 200 && request_type.status < 400) {
-					                      var type_details = JSON.parse(this.response);
-					                      document.getElementById("pokemon-half-damage-from").innerHTML = '<div class="font-weight-bold">Half-Damage</div>';
-					                      type_details.damage_relations.half_damage_from.forEach(type => {
-					                        document.getElementById("pokemon-half-damage-from").innerHTML += '<li>' + type.name.fcaps() + '</li>';
-					                      });
-
-					                      document.getElementById("pokemon-double-damage-from").innerHTML = '<div class="font-weight-bold">Double-Damage</div>';
-					                      type_details.damage_relations.double_damage_from.forEach(type => {
-					                        document.getElementById("pokemon-double-damage-from").innerHTML += '<li>' + type.name.fcaps() + '</li>';
-					                      });
-
-					                      document.getElementById("pokemon-half-damage-to").innerHTML = '<div class="font-weight-bold">Half-Damage To</div>';
-					                      type_details.damage_relations.half_damage_to.forEach(type => {
-					                        document.getElementById("pokemon-half-damage-to").innerHTML += '<li>' + type.name.fcaps() + '</li>';
-					                      });
-
-					                      document.getElementById("pokemon-double-damage-to").innerHTML = '<div class="font-weight-bold">Double-Damage To</div>';
-					                      type_details.damage_relations.double_damage_to.forEach(type => {
-					                        document.getElementById("pokemon-double-damage-to").innerHTML += '<li>' + type.name.fcaps() + '</li>';
-					                      });
-			                    	}
-			                  }
-			                  request_type.send();
-
-			                });
-
-			                document.getElementById("pokemon-name").innerHTML = '<h1 class="m-0 d-inline">' + pokemon_searched.toUpperCase() + '</h1>';
-			                document.getElementById("pokemon-abilities").innerHTML += '</ul>';
-			                document.getElementById("pokemon-image").innerHTML = '<img style="width: 96px;" src="' + pokemon_details.sprites.front_default + '">';
-			                document.getElementById("pokemon-weight").innerHTML = '<span class="font-weight-bold">Weight:</span> ' + pokemon_details.weight + 'kg';
-			              }
-			              else
-			              {
-			                  document.getElementById("pokemon-details").innerHTML = '<h3>Pokemon Not Found</h3>'
-			              }
-										document.getElementById("pokemon-details").style.display = "block"
-			            }
-			            request_details.send();
-			    }
-		</script>
+		<script src="https://raw.github.com/aswinshenoy/pokemon-api/master/script.js"></script>
 	</head>
 	<body>
-		<div id="search-box" class="bg-primary p-3 text-center">
-			<form class="mb-0" onsubmit="search_pokemon(); return false">
-				<div class="d-flex justify-content-center">
-					<input id="search_name" type="text" value="" placeholder="Enter Pokemon Name" class="p-1 mr-1">
-					<input type="submit" value="Search" class="btn btn-light p-2">
-				</div>
-			</form>
+		<div id="search-box" class="bg-primary p-2">
+			<div class="row m-0">
+					<div class="col-sm-3 text-center p-3">
+							<img src="./pokemon_logo.png" class="w-100" style="max-width: 120px;">
+					</div>
+					<div class="col-md-9">
+							<form class="mb-0  d-flex justify-content-center align-items-center h-100 w-100" onsubmit="search_pokemon(); return false">
+								<div>
+									<input id="search_name" type="text" value="" placeholder="Enter Pokemon Name">
+									<input id="submit_button" type="submit" value="Search" class="btn btn-light p-2">
+								</div>
+							</form>
+					</div>
+			</div>
 		</div>
-		<div id="pokemon-details" class="container p-2" style="display: none;">
-			  <div class="row m-0">
-			    <div class="col-sm-2 col-4">
-				<div id="pokemon-image"></div>
+		<div id="pokemon-details" class="container-fluid p-2" style="display: none;">
+			  <div class="row m-0 p-1">
+			    <div class="col-lg-2 col-md-3">
+						<div class="card p-2">
+							<div class="row m-0">
+								<div id="pokemon-image" class="col-3 p-1 d-flex align-items-center justify-content-center"></div>
+								<div id="pokemon-name" class="col-9 p-1 d-flex align-items-center justify-content-center"></div>
+							</div>
+							<div id="pokemon-weight"></div>
+							<div id="pokemon-types"></div>
+							<div id="pokemon-abilities"></div>
+						</div>
+						<div id="pokemon-evolution" class="card p-3 my-1"></div>
 			    </div>
 			    <div class="col">
-			      <div id="pokemon-name"></div>
-			      <div id="pokemon-weight"></div>
-			    </div>
+							<div class="row m-0">
+								<div class="col-12 p-0">
+										<div id="pokemon-info" class="card p-4">
+												<h4>About</h4>
+										</div>
+								</div>
+								 <div class="col-12 p-2">
+									 	<div id="pokemon-stats" class="row m-0"></div>
+								 </div>
+									<div class="col-md-6 p-2">
+										<div id="pokemon-damage-to" class="card p-3">
+											<h4>Strengths</h4>
+											<div class="row m-0">
+												<div id="pokemon-double-damage-to" class="col-md-6"></div>
+												<div id="pokemon-half-damage-from" class="col-md-6"></div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6 p-2">
+										<div id="pokemon-damage-from" class="card p-3">
+											<h4>Weakness</h4>
+											<div class="row m-0">
+												<div id="pokemon-double-damage-from" class="col-md-6"></div>
+												<div id="pokemon-half-damage-to" class="col-md-6"></div>
+											</div>
+										</div>
+									</div>
+									<div id="pokemon-moves" class="card p-3 m-2">
+										<h4>Moves</h4>
+									</div>
+						 </div>
+					</div>
 			  </div>
-			  <div class="row m-0">
-			    <div class="col-md-6 p-0">
-			      <div id="pokemon-abilities" class="card  p-3 m-1"></div>
-			    </div>
-			    <div class="col-md-6 p-0">
-			      <div id="pokemon-types" class="card p-3 m-1"></div>
-			    </div>
-			  </div>
-			  <div id="pokemon-damage-to" class="card p-3 m-2">
-			    <h4>Strengths</h4>
-			    <div class="row m-0">
-			      <div id="pokemon-double-damage-to" class="col-md-6"></div>
-			      <div id="pokemon-half-damage-to" class="col-md-6"></div>
-			    </div>
-			  </div>
-			  <div id="pokemon-damage-from" class="card p-2 m-2">
-			    <h4>Weakness</h4>
-			    <div class="row m-0">
-			      <div id="pokemon-double-damage-from" class="col-md-6"></div>
-			      <div id="pokemon-half-damage-from" class="col-md-6"></div>
-			    </div>
-			  </div>
-		</div>
 		<style>
 			body { background: #eee; }
 			.card { border-radius: 0!important; border: none!important; }
+			#search_name
+			{
+					border: none;
+					border-radius: 2rem 0 0 2rem;
+					padding: 0.5rem 0 0.5rem 2rem;
+			}
+			#submit_button
+			{
+				border: none;
+				border-radius: 0 2rem 2rem 0;
+				padding: 0rem 1rem;
+			}
 		</style>
 	</body>
 </html>
